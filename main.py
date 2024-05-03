@@ -1,14 +1,17 @@
 import click
 
+# Agrupador
 @click.group()
 def mycommands():
     pass
 
+# Función de prueba, creamos un "echo" y lo convertimos en un comando.
 @click.command()
 @click.option("--name", prompt="Enter your name", help="The name of the user")
 def hello(name):
     click.echo(f"Hello {name}!")
 
+# Array con los valores de las prioridades que requerimos para el argumento de add_todo
 PRIORITIES = {
     "o": "Optional",
     "l": "Low",
@@ -17,6 +20,11 @@ PRIORITIES = {
     "c": "Crucial"
 }
 
+"""
+Comando que crea el archivo (nos permite crear tantos como queramos),
+y a su vez registra las tareas nuevas, sus descripciones y sus 
+diferentes grados de prioridad
+"""
 @click.command()
 @click.argument("priority", type=click.Choice(PRIORITIES.keys()), default="m")
 @click.argument("todofile", type=click.Path(exists=False), required=0)
@@ -27,6 +35,7 @@ def add_todo(name, description, priority, todofile):
     with open(filename, "a+") as f:
         f.write(f"{name}: {description} [Priority: {PRIORITIES[priority]}]\n")
 
+# Comando para borrar tareas del archivo de registro.
 @click.command()
 @click.argument("idx", type=int, required=1)
 def delete(idx):
@@ -37,6 +46,7 @@ def delete(idx):
         f.write("\n".join(todo_list))
         f.write('\n')
         
+# Comando para que nos muestre las tareas registradas en un determinado documento.
 @click.command()
 @click.option("-p", "--priority", type=click.Choice(PRIORITIES.keys))
 @click.argument("todofile", type=click.Path(exists=True), required=0)
@@ -52,10 +62,12 @@ def list_todo(priority, todofile):
             if f"[Priority: {PRIORITIES[priority]}]" in todo:
                 print(f"({idx}) - {todo}")
 
+# Rama final del nesting, o agrupado de comandos.
 mycommands.add_command(hello)
 mycommands.add_command(add_todo)
 mycommands.add_command(delete)
 mycommands.add_command(list_todo)
 
+# Permite mostrar la aplicación por consola.
 if __name__ == "__main__":
     mycommands()
