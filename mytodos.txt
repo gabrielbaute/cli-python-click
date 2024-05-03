@@ -1,0 +1,3 @@
+git: Subir este repositorio a git [Priority: Medium]
+clase: Compartir este repositorio en clases [Priority: Medium]
+libreria: compartir la libreria de click [Priority: Medium]
